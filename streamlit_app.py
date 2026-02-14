@@ -15,15 +15,25 @@ st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Pacifico&family=Quicksand:wght@500&display=swap');
 
+    /* FORCE LIGHT THEME TEXT COLORS (Fixes iPhone Dark Mode Issues) */
+    html, body, [class*="css"] {
+        font-family: 'Quicksand', sans-serif;
+        color: #333333; /* Default dark text */
+    }
+    
     /* Background & Hearts */
     .stApp {
         background: linear-gradient(135deg, #fff0f5 0%, #ffe6e9 100%);
     }
     
+    /* Force Headers to be Pink/Red even in Dark Mode */
+    h1, h2, h3, h4, h5, h6 {
+        color: #e91e63 !important;
+    }
+    
     /* Typography */
     h1 {
         font-family: 'Pacifico', cursive;
-        color: #e91e63;
         font-size: 2.5rem !important;
         text-align: center;
         text-shadow: 2px 2px 0px #fff;
@@ -31,20 +41,20 @@ st.markdown("""
     
     h2 {
         font-family: 'Fredoka One', sans-serif;
-        color: #d81b60;
+        color: #d81b60 !important;
         text-align: center;
     }
     
     h3, .mission-header {
         font-family: 'Fredoka One', sans-serif;
-        color: #880e4f;
+        color: #880e4f !important;
         text-align: center;
     }
     
-    p, .status-text {
+    p, .status-text, div, span {
         font-family: 'Quicksand', sans-serif;
         font-size: 18px;
-        color: #555;
+        color: #333333 !important; /* Force readable text */
         text-align: center;
     }
 
@@ -62,7 +72,7 @@ st.markdown("""
     .letter-slot {
         font-family: 'Fredoka One', sans-serif;
         font-size: 32px;
-        color: #c2185b;
+        color: #c2185b !important;
         margin: 0 8px;
         display: inline-block;
         width: 40px;
@@ -73,6 +83,7 @@ st.markdown("""
     .flip-r {
         display: inline-block;
         animation: flip-vertical 2s forwards 1s; /* Delay start by 1s */
+        color: #c2185b !important;
     }
     @keyframes flip-vertical {
         0% { transform: rotateX(0deg); color: #c2185b; }
@@ -82,7 +93,7 @@ st.markdown("""
     /* Button Styling */
     .stButton>button {
         background: linear-gradient(45deg, #ff4081, #f50057);
-        color: white;
+        color: white !important;
         border-radius: 25px;
         font-weight: bold;
         border: none;
@@ -204,11 +215,13 @@ elif 1 <= st.session_state.stage <= 6:
     # 1. THE "CHECK LOCATION" BUTTON
     # ------------------------------------------------
     
+    # CRITICAL FIX: Safe GPS Handling
     loc = get_geolocation(component_key='gps')
     user_lat, user_lon = None, None
     dist_miles = 999
     
-    if loc:
+    # Safe unpacking of coordinates
+    if loc and isinstance(loc, dict) and 'coords' in loc:
         user_lat = loc['coords']['latitude']
         user_lon = loc['coords']['longitude']
         dist_miles = get_dist_miles(user_lat, user_lon, target['lat'], target['lon'])
@@ -234,7 +247,11 @@ elif 1 <= st.session_state.stage <= 6:
     # THE CHECK BUTTON
     if st.button("📍 CHECK MY LOCATION"):
         if not loc:
-            st.error("⚠️ GPS not found. Allow location access!")
+            st.error("⚠️ GPS not found. Please allow location access!")
+        elif 'error' in loc:
+            st.error(f"⚠️ GPS Error: {loc.get('error')}")
+        elif not user_lat:
+            st.error("⚠️ Waiting for satellite lock... try again.")
         else:
             if dist_miles < st.session_state.radius_miles:
                 st.session_state.can_take_photo = True # LOCK IT OPEN
@@ -283,7 +300,7 @@ elif st.session_state.stage == 7:
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown("""
         <div style="text-align: center;">
-            <span style="font-size: 60px; font-family: 'Fredoka One'; color: #c2185b;">
+            <span style="font-size: 60px; font-family: 'Fredoka One'; color: #c2185b !important;">
                 u N f O <span class="flip-r">r</span> D
             </span>
         </div>
@@ -311,9 +328,9 @@ elif st.session_state.stage == 8:
     st.balloons()
     st.markdown("""
         <div class="success-card">
-            <h1 style="color: #4CAF50;">MISSION ACCOMPLISHED!</h1>
+            <h1 style="color: #4CAF50 !important;">MISSION ACCOMPLISHED!</h1>
             <br>
-            <p style="font-size: 24px; font-family: 'Fredoka One'; color: #333;">
+            <p style="font-size: 24px; font-family: 'Fredoka One'; color: #333333 !important;">
                 Relationship Status: <span style="color: #e91e63;">COUPLE</span> 💑
             </p>
             <hr>
