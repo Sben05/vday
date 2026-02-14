@@ -1,0 +1,20 @@
+# CyberBridge Guardian — requirements.txt
+# ---------------------------------------
+# Core UI / Data stack
+streamlit>=1.32
+pandas>=2.0
+numpy>=1.23
+
+# Layout & navigation
+streamlit-option-menu>=0.3.6
+
+# MFA demo (QR + 6-digit TOTP)
+pyotp>=2.9.0
+qrcode[pil]>=7.4
+
+# URL parsing, domain extraction, IDNA/punycode handling
+tldextract>=5.0.0
+idna>=3.6
+
+# Optional: charting / visuals / misc
+matplotlib>=3.8
