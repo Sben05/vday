@@ -7,284 +7,311 @@ import time
 import random
 
 # ---------------------------------------------------------
-# 1. CONFIGURATION & CLEAN STYLING
+# 1. CONFIGURATION & ROMANTIC STYLING
 # ---------------------------------------------------------
-st.set_page_config(page_title="Valentine's Mission", page_icon="📍")
+st.set_page_config(page_title="Valentine's Mission", page_icon="💖")
 
 st.markdown("""
     <style>
-    /* 1. Global Reset */
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Pacifico&family=Quicksand:wght@500&display=swap');
+
+    /* FORCE LIGHT THEME TEXT COLORS (Fixes iPhone Dark Mode Issues) */
+    html, body, [class*="css"] {
+        font-family: 'Quicksand', sans-serif;
+        color: #333333; /* Default dark text */
+    }
+    
+    /* Background & Hearts */
     .stApp {
-        background-color: #F2F2F7; /* iOS Light Gray Background */
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: linear-gradient(135deg, #fff0f5 0%, #ffe6e9 100%);
     }
     
-    /* 2. Hide Streamlit Branding */
-    header {visibility: hidden;}
-    footer {visibility: hidden;}
-    #MainMenu {visibility: hidden;}
-    
-    /* 3. Card Styling (Solid White, Good Shadow) */
-    .css-card {
-        background-color: #FFFFFF;
-        border-radius: 18px;
-        padding: 24px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    /* Force Headers to be Pink/Red even in Dark Mode */
+    h1, h2, h3, h4, h5, h6 {
+        color: #e91e63 !important;
     }
     
-    /* 4. Typography */
+    /* Typography */
     h1 {
-        color: #FF2E63 !important;
-        font-family: 'Helvetica Neue', sans-serif;
-        font-weight: 800;
-        font-size: 28px !important;
+        font-family: 'Pacifico', cursive;
+        font-size: 2.5rem !important;
         text-align: center;
-        margin-bottom: 5px;
+        text-shadow: 2px 2px 0px #fff;
     }
     
     h2 {
-        color: #1C1C1E !important;
-        font-weight: 700;
-        font-size: 22px !important;
-        margin-top: 0;
-    }
-    
-    p, li {
-        color: #3A3A3C !important;
-        font-size: 17px;
-        line-height: 1.5;
-    }
-
-    /* 5. Letter Pills (Flexbox to prevent cutoff) */
-    .letter-container {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-    
-    .letter-box {
-        width: 45px;
-        height: 50px;
-        background: #FFFFFF;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        font-size: 24px;
-        color: #FF2E63;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        border: 2px solid #FF2E63;
-    }
-    
-    .letter-box.locked {
-        background: #E5E5EA;
-        color: #AEAEB2;
-        border: 2px solid #E5E5EA;
-    }
-
-    /* 6. Big Buttons */
-    .stButton > button {
-        width: 100%;
-        background-color: #FF2E63;
-        color: white;
-        border-radius: 14px;
-        height: 55px;
-        font-size: 18px;
-        font-weight: 600;
-        border: none;
-    }
-    
-    /* 7. Success Banner */
-    .success-banner {
-        background-color: #34C759;
-        color: white;
-        padding: 15px;
-        border-radius: 12px;
+        font-family: 'Fredoka One', sans-serif;
+        color: #d81b60 !important;
         text-align: center;
-        font-weight: bold;
-        margin-bottom: 15px;
     }
     
-    /* 8. Flip Animation */
-    .flip-text {
-        display: inline-block;
-        animation: flip 2s forwards 0.5s;
+    h3, .mission-header {
+        font-family: 'Fredoka One', sans-serif;
+        color: #880e4f !important;
+        text-align: center;
     }
-    @keyframes flip {
-        0% { transform: rotateX(0deg); }
-        100% { transform: rotateX(180deg) translateY(-3px); }
+    
+    p, .status-text, div, span {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 18px;
+        color: #333333 !important; /* Force readable text */
+        text-align: center;
+    }
+
+    /* The "Collected Letters" Box */
+    .mystery-box {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 15px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(233, 30, 99, 0.15);
+        text-align: center;
+        margin-bottom: 20px;
+        border: 2px dashed #f8bbd0;
+    }
+    
+    .letter-slot {
+        font-family: 'Fredoka One', sans-serif;
+        font-size: 32px;
+        color: #c2185b !important;
+        margin: 0 8px;
+        display: inline-block;
+        width: 40px;
+        border-bottom: 3px solid #ff4081;
+    }
+
+    /* The "Flip" Animation for Finale */
+    .flip-r {
+        display: inline-block;
+        animation: flip-vertical 2s forwards 1s; /* Delay start by 1s */
+        color: #c2185b !important;
+    }
+    @keyframes flip-vertical {
+        0% { transform: rotateX(0deg); color: #c2185b; }
+        100% { transform: rotateX(180deg) translateY(-4px); color: #d81b60; } 
+    }
+    
+    /* Button Styling */
+    .stButton>button {
+        background: linear-gradient(45deg, #ff4081, #f50057);
+        color: white !important;
+        border-radius: 25px;
+        font-weight: bold;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        height: 50px;
+        width: 100%;
+        font-size: 18px;
+    }
+
+    /* Success Screen */
+    .success-card {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(233, 30, 99, 0.3);
+        animation: popIn 0.5s;
+    }
+    @keyframes popIn {
+        0% { transform: scale(0.8); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
     }
     </style>
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# 2. STATE MANAGEMENT
+# 2. STATE MANAGEMENT & DATA
 # ---------------------------------------------------------
 
 if 'stage' not in st.session_state:
     st.session_state.stage = 0
+
 if 'radius_miles' not in st.session_state:
     st.session_state.radius_miles = 0.25
+
 if 'can_take_photo' not in st.session_state:
     st.session_state.can_take_photo = False
 
+# MIXED CASE LETTERS: u - N - f - O - r - D
 STOPS = [
-    {"name": "Start: Davis St", "lat": 42.0451, "lon": -87.6877, "letter": "u", "task": "Selfie on the platform."},
+    {"name": "Start: Davis St", "lat": 42.0451, "lon": -87.6877, "letter": "u", "task": "Take a selfie on the platform!"},
     {"name": "The Conservatory", "lat": 41.9245, "lon": -87.6348, "letter": "N", "task": "Find a flower matching your outfit."},
     {"name": "Royal Palms", "lat": 41.9105, "lon": -87.6775, "letter": "f", "task": "Capture the shuffleboard vibes."},
     {"name": "Wicker Park", "lat": 41.9088, "lon": -87.6770, "letter": "O", "task": "Find something vintage."},
-    {"name": "QXY Dumplings", "lat": 41.8527, "lon": -87.6322, "letter": "r", "task": "Snap the soup dumplings!"}, 
-    {"name": "Navy Pier", "lat": 41.8917, "lon": -87.6043, "letter": "D", "task": "Skyline background needed."}
+    {"name": "QXY Dumplings", "lat": 41.8527, "lon": -87.6322, "letter": "r", "task": "Snap the dumplings!"}, # The Lowercase r
+    {"name": "Navy Pier", "lat": 41.8917, "lon": -87.6043, "letter": "D", "task": "Get the skyline background."}
 ]
 
 def get_dist_miles(lat1, lon1, lat2, lon2):
-    return math.sqrt(((lat2 - lat1) * 69.0)**2 + ((lon2 - lon1) * 52.0)**2)
+    dlat = (lat2 - lat1) * 69.0
+    dlon = (lon2 - lon1) * 52.0
+    return math.sqrt(dlat**2 + dlon**2)
 
 # ---------------------------------------------------------
-# 3. UI RENDERER
+# 3. MAIN UI
 # ---------------------------------------------------------
 
-# --- HEADER (Letters) ---
-# Show letters only during the game
+st.markdown("<h1>💖 Valentine's Protocol 💖</h1>", unsafe_allow_html=True)
+
+# A. SHOW COLLECTED LETTERS
+# Only show letters if we are in the HUNT phases (Stage 1-7)
 if 0 < st.session_state.stage < 8:
-    html_pills = '<div class="letter-container">'
+    display_html = '<div class="mystery-box">'
     for i in range(6):
+        # We offset by 1 because Stage 0 is instructions
         if i < (st.session_state.stage - 1):
-            html_pills += f'<div class="letter-box">{STOPS[i]["letter"]}</div>'
+            display_html += f'<span class="letter-slot">{STOPS[i]["letter"]}</span>'
         else:
-            html_pills += '<div class="letter-box locked">?</div>'
-    html_pills += '</div>'
-    st.markdown(html_pills, unsafe_allow_html=True)
+            display_html += '<span class="letter-slot" style="color:#ccc">?</span>'
+    display_html += '</div>'
+    st.markdown(display_html, unsafe_allow_html=True)
+
 
 # =========================================================
-# STAGE 0: BRIEFING
+# STAGE 0: BRIEFING / INSTRUCTIONS
 # =========================================================
 if st.session_state.stage == 0:
     st.markdown("""
-        <div class="css-card" style="text-align: center;">
-            <div style="font-size: 50px; margin-bottom: 10px;">💌</div>
-            <h1>MISSION PROTOCOL</h1>
-            <p style="color: #8E8E93 !important;">Chicago, IL • Feb 14</p>
-            <hr style="border-top: 1px solid #E5E5EA;">
-            <div style="text-align: left; margin-top: 20px;">
-                <p><b>🎯 OBJECTIVE</b><br>Navigate to 6 locations.</p>
-                <p><b>📡 TOOLS</b><br>Use this app to verify GPS.</p>
-                <p><b>📸 PROOF</b><br>Upload photos to unlock clues.</p>
-            </div>
+        <div class="success-card">
+            <h2>🕵️‍♀️ MISSION BRIEFING</h2>
+            <p>
+                Welcome, Agent. 
+                <br><br>
+                Today is not a normal day. It is a <b>City-Wide Scavenger Hunt</b>.
+                <br><br>
+                <b>THE OBJECTIVE:</b><br>
+                Travel to 6 specific locations across Chicago.
+                <br><br>
+                <b>THE RULES:</b><br>
+                1. Navigate to the Target Location.<br>
+                2. Use this app to verify your GPS coordinates.<br>
+                3. Upload photographic evidence to unlock a <b>Secret Clue</b>.<br>
+                <br>
+                Collect all 6 clues to decode the Final Message.
+            </p>
+            <br>
         </div>
     """, unsafe_allow_html=True)
     
-    if st.button("Start Mission"):
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    if st.button("🚀 INITIALIZE MISSION"):
         st.session_state.stage = 1
         st.rerun()
+
 
 # =========================================================
 # STAGES 1-6: THE HUNT
 # =========================================================
 elif 1 <= st.session_state.stage <= 6:
-    idx = st.session_state.stage - 1
-    target = STOPS[idx]
-
-    # 1. MAP SECTION (Clean & Simple)
+    # Offset Index by -1 because Stage 1 maps to STOP[0]
+    current_stop_idx = st.session_state.stage - 1
+    target = STOPS[current_stop_idx]
+    
+    st.write(f"### 📍 TARGET #{st.session_state.stage}: {target['name']}")
+    st.markdown(f"<p class='status-text'>Task: {target['task']}</p>", unsafe_allow_html=True)
+    
+    # ------------------------------------------------
+    # 1. THE "CHECK LOCATION" BUTTON
+    # ------------------------------------------------
+    
+    # CRITICAL FIX: Safe GPS Handling
     loc = get_geolocation(component_key='gps')
     user_lat, user_lon = None, None
     dist_miles = 999
     
+    # Safe unpacking of coordinates
     if loc and isinstance(loc, dict) and 'coords' in loc:
         user_lat = loc['coords']['latitude']
         user_lon = loc['coords']['longitude']
         dist_miles = get_dist_miles(user_lat, user_lon, target['lat'], target['lon'])
         
-        # Simple Map
-        view_state = pdk.ViewState(
-            latitude=(user_lat + target['lat']) / 2,
-            longitude=(user_lon + target['lon']) / 2,
-            zoom=12,
-            pitch=0
-        )
-        
-        layer_line = pdk.Layer(
-            "LineLayer",
-            pd.DataFrame([{"s": [user_lon, user_lat], "t": [target['lon'], target['lat']]}]),
-            get_source_position="s", get_target_position="t",
-            get_color=[0, 122, 255], get_width=5
-        )
-        
-        layer_scat = pdk.Layer(
-            "ScatterplotLayer",
-            pd.DataFrame([
-                {"pos": [user_lon, user_lat], "c": [0, 122, 255], "r": 200}, # Blue User
-                {"pos": [target['lon'], target['lat']], "c": [255, 46, 99], "r": 200} # Red Target
-            ]),
-            get_position="pos", get_color="c", get_radius="r"
-        )
-        
-        st.pydeck_chart(pdk.Deck(
-            layers=[layer_line, layer_scat], 
-            initial_view_state=view_state, 
-            map_style="mapbox://styles/mapbox/light-v10",
-            height=300
-        ))
-    else:
-        st.info("📡 Waiting for GPS signal...")
+        # MAP VISUALIZATION
+        line_data = pd.DataFrame([{ "source": [user_lon, user_lat], "target": [target['lon'], target['lat']] }])
+        scat_data = pd.DataFrame([
+            {"lon": user_lon, "lat": user_lat, "color": [0, 0, 255, 200], "size": 100}, 
+            {"lon": target['lon'], "lat": target['lat'], "color": [255, 0, 0, 200], "size": 100} 
+        ])
 
-    # 2. INFO CARD
-    st.markdown(f"""
-        <div class="css-card">
-            <p style="text-align: center; color: #8E8E93 !important; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Target #{st.session_state.stage}</p>
-            <h2>{target['name']}</h2>
-            <hr style="border-top: 1px solid #E5E5EA;">
-            <p style="text-align: center; font-weight: 500;">{target['task']}</p>
-        </div>
-    """, unsafe_allow_html=True)
+        layer_line = pdk.Layer("LineLayer", line_data, get_source_position="source", get_target_position="target", get_color=[255, 0, 128], get_width=5)
+        layer_scat = pdk.Layer("ScatterplotLayer", scat_data, get_position=["lon", "lat"], get_color="color", get_radius="size", pickable=True)
+        
+        mid_lat = (user_lat + target['lat']) / 2
+        mid_lon = (user_lon + target['lon']) / 2
+        zoom_level = 12 if dist_miles > 2 else 15
 
-    # 3. ACTIONS
-    if st.button("📍 Verify Location"):
+        view_state = pdk.ViewState(latitude=mid_lat, longitude=mid_lon, zoom=zoom_level, pitch=0)
+        
+        st.pydeck_chart(pdk.Deck(layers=[layer_line, layer_scat], initial_view_state=view_state, tooltip={"text": "Current Location"}))
+    
+    # THE CHECK BUTTON
+    if st.button("📍 CHECK MY LOCATION"):
         if not loc:
-            st.error("Please enable GPS!")
+            st.error("⚠️ GPS not found. Please allow location access!")
+        elif 'error' in loc:
+            st.error(f"⚠️ GPS Error: {loc.get('error')}")
         elif not user_lat:
-            st.warning("Acquiring signal...")
+            st.error("⚠️ Waiting for satellite lock... try again.")
         else:
             if dist_miles < st.session_state.radius_miles:
-                st.session_state.can_take_photo = True
+                st.session_state.can_take_photo = True # LOCK IT OPEN
                 st.balloons()
             else:
-                st.error(f"Too far! {dist_miles:.2f} miles away.")
+                st.warning(f"🔭 Too far! Distance: {dist_miles:.2f} miles")
+                st.caption(f"Needed: < {st.session_state.radius_miles} mi")
 
-    # 4. CAMERA UNLOCK
+    # ------------------------------------------------
+    # 2. CAMERA UNLOCK (Persistent State)
+    # ------------------------------------------------
+    
     if st.session_state.can_take_photo:
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown(f'<div class="success-banner">✅ ARRIVED! ({dist_miles:.2f} mi)</div>', unsafe_allow_html=True)
+        st.success(f"✅ YOU ARE HERE! ({dist_miles:.2f} mi)")
+        st.markdown("---")
+        st.write("📸 **Proof Required**")
         
-        photo = st.camera_input("Take Photo", key=f"cam_{st.session_state.stage}")
+        photo = st.camera_input("Capture Evidence", key=f"cam_{st.session_state.stage}")
         
         if photo:
-            with st.spinner("Uploading proof..."):
-                time.sleep(1.5)
-                if random.random() > 0.3:
-                    st.balloons()
-                    st.session_state.stage += 1
-                    st.session_state.can_take_photo = False
-                    st.rerun()
-                else:
-                    st.error("⚠️ Too blurry! Smile harder.")
+            progress_text = "Analyzing joy levels..."
+            my_bar = st.progress(0, text=progress_text)
+            
+            for percent_complete in range(100):
+                time.sleep(0.01)
+                if percent_complete == 50: my_bar.progress(percent_complete + 1, text="Verifying hearts...")
+                my_bar.progress(percent_complete + 1)
+            
+            # 30% Reject Chance
+            if random.random() > 0.3:
+                st.balloons()
+                st.success("✨ MATCH CONFIRMED!")
+                time.sleep(1)
+                st.session_state.stage += 1
+                st.session_state.can_take_photo = False # Reset for next stage
+                st.rerun()
+            else:
+                st.error("⚠️ DETECTION ERROR: Not enough smiles.")
+                st.caption("Try again!")
+
 
 # =========================================================
-# STAGE 7: REVEAL
+# STAGE 7: THE REVEAL (Finale)
 # =========================================================
 elif st.session_state.stage == 7:
+    st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown("""
-        <div class="css-card" style="text-align: center; padding: 60px 20px;">
-            <p style="color: #8E8E93 !important;">DECODING COMPLETE</p>
-            <div style="font-size: 55px; font-weight: 800; color: #FF2E63; letter-spacing: 4px;">
-                uNfO<span class="flip-text">r</span>D
-            </div>
-            <br><br>
-            <h2>CHECK YOUR POCKET</h2>
+        <div style="text-align: center;">
+            <span style="font-size: 60px; font-family: 'Fredoka One'; color: #c2185b !important;">
+                u N f O <span class="flip-r">r</span> D
+            </span>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+        <div style="text-align: center; margin-top: 30px; animation: fadeIn 3s;">
+            <p style="font-family: 'Quicksand'; font-size: 20px;">
+                Processing complete.<br>
+                <b>Check your pocket.</b>
+            </p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -293,30 +320,59 @@ elif st.session_state.stage == 7:
         st.session_state.stage = 8
         st.rerun()
 
+
 # =========================================================
 # STAGE 8: SUCCESS
 # =========================================================
 elif st.session_state.stage == 8:
+    st.balloons()
     st.markdown("""
-        <div class="css-card" style="text-align: center;">
-            <div style="font-size: 80px;">💑</div>
-            <h1 style="color: #34C759 !important;">MISSION SUCCESS</h1>
-            <p>Status: <b>Official</b></p>
+        <div class="success-card">
+            <h1 style="color: #4CAF50 !important;">MISSION ACCOMPLISHED!</h1>
+            <br>
+            <p style="font-size: 24px; font-family: 'Fredoka One'; color: #333333 !important;">
+                Relationship Status: <span style="color: #e91e63;">COUPLE</span> 💑
+            </p>
+            <hr>
+            <p style="font-family: 'Quicksand'; font-size: 18px;">
+                <b>Next Objectives:</b><br>
+                1. Watch the Fireworks 🎆<br>
+                2. Take a "First Photo" 📸<br>
+                3. Live Happily Ever After ✨
+            </p>
+            <br>
+            <p style="font-size: 14px; color: #888;">
+                Developed with ❤️ by Your Boyfriend.
+            </p>
         </div>
     """, unsafe_allow_html=True)
-    st.balloons()
+
 
 # =========================================================
-# ADMIN (Hidden)
+# D. MANUAL ADMIN OVERRIDE
 # =========================================================
-st.markdown("<br><br>", unsafe_allow_html=True)
-with st.expander("🛠️"):
-    st.session_state.radius_miles = st.slider("Radius (mi)", 0.1, 15.0, 0.25)
-    target_stage = st.selectbox("Jump", range(9))
+st.markdown("<br><br><br>", unsafe_allow_html=True)
+with st.expander("🛠️ Admin Console"): 
+    st.write("Use this if GPS fails or to skip ahead.")
+    
+    st.session_state.radius_miles = st.slider(
+        "GPS Tolerance (Miles)", 
+        min_value=0.1, max_value=12.5, value=float(st.session_state.radius_miles), step=0.1
+    )
+    st.write(f"Requirement: < **{st.session_state.radius_miles} miles**")
+    
+    # Updated Selectbox for 0-8 stages
+    target_stage = st.selectbox(
+        "Jump to Stage:", 
+        options=[0, 1, 2, 3, 4, 5, 6, 7, 8],
+        format_func=lambda x: f"Stage {x}" if x < 7 else ("Finale" if x==7 else "Success")
+    )
+    
     if st.button("Teleport"):
         st.session_state.stage = target_stage
         st.session_state.can_take_photo = False
         st.rerun()
-    if st.button("Force Camera"):
+    
+    if st.button("Force Unlock Camera"):
         st.session_state.can_take_photo = True
         st.rerun()
